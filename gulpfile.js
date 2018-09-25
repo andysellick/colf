@@ -1,7 +1,7 @@
 var basePaths = {
-    src: 'src/',
-    dest: 'dist/',
-    stat: 'static/'
+  src: 'src/',
+  dest: 'dist/',
+  stat: 'static/'
 };
 var paths = {
     templates: {
@@ -50,7 +50,7 @@ var watch = require('gulp-watch');
 /* CSS - LESS */
 function processCss(inputStream, taskType) {
     return inputStream
-        .pipe($.plumber(function(error) {
+        .pipe($.plumber(function (error) {
             $.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message));
             this.emit('end');
         }))
@@ -59,19 +59,18 @@ function processCss(inputStream, taskType) {
         .pipe($.rename({suffix: '.min'}))
         .pipe(cssnano())
         .pipe(gulp.dest(paths.styles.dest))
-        .pipe(browserSync.stream())
-        //.pipe($.notify({ message: taskType + ' task complete' }));
+        .pipe(browserSync.stream());
 }
 
 gulp.task('styles', ['less:main']);
-gulp.task('less:main', function() {
+gulp.task('less:main', function () {
     return processCss(gulp.src(paths.styles.src + 'styles.less'), 'Styles');
 });
 
 /* JS */
-gulp.task('scripts', ['scripts:moveFiles'], function() {
+gulp.task('scripts', ['scripts:moveFiles'], function () {
   return gulp.src(paths.scripts.src + '*.js')
-    .pipe($.plumber(function(error) {
+    .pipe($.plumber(function (error) {
         $.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message));
         this.emit('end');
     }))
@@ -84,51 +83,46 @@ gulp.task('scripts', ['scripts:moveFiles'], function() {
     .pipe($.uglify())
     .pipe($.bytediff.stop())
     .pipe(gulp.dest(paths.scripts.dest))
-    .pipe(browserSync.stream())
-    //.pipe($.notify({ message: 'Scripts task complete' }));
+    .pipe(browserSync.stream());
 });
 
 /* Move JS files that are already minified to dist/js/ folder */
-gulp.task('scripts:moveFiles', function() {
+gulp.task('scripts:moveFiles', function () {
     gulp.src(copyFiles.scripts, { base: './static/js/' })
     .pipe(gulp.dest(paths.scripts.dest));
 });
 
 /* Images */
-gulp.task('images', function() {
-  return gulp.src(paths.images.src + '**/*',{base: paths.images.src})
-    .pipe($.plumber(function(error) {
+gulp.task('images', function () {
+  return gulp.src(paths.images.src + '**/*', {base: paths.images.src})
+    .pipe($.plumber(function (error) {
         $.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message));
         this.emit('end');
     }))
-    //.pipe($.bytediff.start()) //seems to be causing a problem with image reprocessing in subdirs on windows
     .pipe($.newer(paths.images.dest))
     .pipe($.cache($.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
-    //.pipe($.bytediff.stop()) //seems to be causing a problem with image reprocessing in subdirs on windows
     .pipe(gulp.dest(paths.images.dest))
-    .pipe(browserSync.stream())
-    //.pipe($.notify({ message: 'Images task complete' }));
+    .pipe(browserSync.stream());
 });
 
 /* HTML */
-gulp.task('copyHtml', function(){
+gulp.task('copyHtml', function () {
     return gulp.src(paths.templates.src + "*.html")
         .pipe(gulp.dest(paths.templates.dest))
-        .pipe(browserSync.stream())
-        //.pipe($.notify({ message: 'HTML task complete' }));
+        .pipe(browserSync.stream());
 });
 
-gulp.task('copyBowerStuff',function(){
+gulp.task('copyBowerStuff', function () {
     gulp.src([paths.bower.src + '/**/*'])
     .pipe(gulp.dest(paths.bower.dest));
 });
 
-gulp.task('copyAssets',function(){
+gulp.task('copyAssets', function () {
     gulp.src([paths.assets.src + '/**/*'])
     .pipe(gulp.dest(paths.assets.dest));
 });
 
-gulp.task('jasmine', function() {
+gulp.task('jasmine', function () {
   var filesForTest = [basePaths.src + 'static/bower_components/jquery/dist/jquery.min.js', paths.scripts.src + '**/*.js', paths.spec.src + '**/*_spec.js'];
   return gulp.src(filesForTest)
     .pipe(watch(filesForTest))
@@ -136,39 +130,8 @@ gulp.task('jasmine', function() {
     .pipe(jasmineBrowser.server({port: 8888}));
 });
 
-/* optional - file generation */
-//http://stackoverflow.com/questions/23230569/how-do-you-create-a-file-from-a-string-in-gulp
-function createFile(filename, variables) {
-	var src = require('stream').Readable({ objectMode: true })
-	src._read = function () {
-		for(var f = 0; f < variables.length; f++){
-			this.push(new gutil.File({ cwd: "", base: "", path: filename.replace('XXX',f), contents: new Buffer(variables[f]) }))
-		}
-	    this.push(null)
-	}
-	return src;
-}
-//create the file content in the form of an array. In this case we take a string and replace 'VAR1' with loop number
-function generateFileVariables(numfiles,filecontent){
-	var output = [];
-	for(var i = 0; i < numfiles; i++){
-		var str = filecontent.replace(/VAR1/gi, i);
-		output.push(str);
-	}
-	return output;
-}
-
-var numfiles = 10;
-var filecontent = "This is an example of the content that could go into a file. It might contain variables that will be output automatically such as this: VAR1";
-var filevariables = generateFileVariables(numfiles,filecontent);
-
-gulp.task('generateFiles', function () {
-	return createFile("fileXXX.txt", filevariables)
-	.pipe(gulp.dest(paths.templates.dest + 'files/'))
-});
-
 /* BrowserSync */
-gulp.task('browser-sync', ['styles', 'scripts', 'images', 'copyHtml', 'copyAssets', 'copyBowerStuff'], function() {
+gulp.task('browser-sync', ['styles', 'scripts', 'images', 'copyHtml', 'copyAssets', 'copyBowerStuff'], function () {
     browserSync.init({
         server: {
             baseDir: "./dist/"
@@ -189,11 +152,11 @@ gulp.task('clear', function (done) {
 });
 
 /* Clean up stray files */
-gulp.task('clean', ['clear'], function(cb) {
+gulp.task('clean', ['clear'], function (cb) {
     $.del([basePaths.dest], cb)
 });
 
 /* Default task */
-gulp.task('default', ['clean'], function() {
+gulp.task('default', ['clean'], function () {
     gulp.start('browser-sync');
 });
