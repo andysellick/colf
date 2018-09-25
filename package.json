@@ -1,8 +1,8 @@
 {
-  "name": "housestyles-gulp",
+  "name": "colf-gulp",
   "version": "0.1.0",
   "license": "MIT",
-  "description": "Gulp capabilities for house styles",
+  "description": "",
   "author": "Andy Sellick",
   "main": "gulpfile.js",
   "scripts": {
