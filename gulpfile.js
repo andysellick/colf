@@ -27,6 +27,9 @@ var paths = {
     bower: {
         src: basePaths.src + basePaths.stat + 'bower_components',
         dest: basePaths.dest + basePaths.stat + 'bower_components'
+    },
+    spec: {
+        src: basePaths.src + 'spec/'
     }
 };
 
@@ -39,8 +42,10 @@ var gulp = require('gulp'),
     copyFiles = {
         scripts: []
     };
+var jasmineBrowser = require('gulp-jasmine-browser');
 var cssnano = require('gulp-cssnano');
 var gutil = require('gulp-util');
+var watch = require('gulp-watch');
 
 /* CSS - LESS */
 function processCss(inputStream, taskType) {
@@ -121,6 +126,14 @@ gulp.task('copyBowerStuff',function(){
 gulp.task('copyAssets',function(){
     gulp.src([paths.assets.src + '/**/*'])
     .pipe(gulp.dest(paths.assets.dest));
+});
+
+gulp.task('jasmine', function() {
+  var filesForTest = [basePaths.src + 'static/bower_components/jquery/dist/jquery.min.js', paths.scripts.src + '**/*.js', paths.spec.src + '**/*_spec.js'];
+  return gulp.src(filesForTest)
+    .pipe(watch(filesForTest))
+    .pipe(jasmineBrowser.specRunner())
+    .pipe(jasmineBrowser.server({port: 8888}));
 });
 
 /* optional - file generation */
