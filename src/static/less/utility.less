@@ -1,31 +1,28 @@
 /* --utility classes */
+.align-center {text-align:center;}
+.align-left {text-align:left;}
+.align-right {text-align:right;}
+.float-left {float:left;}
+.float-right {float:right;}
+.bold {font-weight:bold;}
+.italic {font-style:italic;}
+.hidden {display:none;}
+.block {display:block;}
 
-    .align-center {text-align:center;}
-    .align-left {text-align:left;}
-    .align-right {text-align:right;}
-    .float-left {float:left;}
-    .float-right {float:right;}
-    .bold {font-weight:bold;}
-    .italic {font-style:italic;}
-    .hidden {display:none;}
-    .block {display:block;}
-    
 /* --clearfix */
+.clearfix:after{clear:both;content:".";display:block;height:0;visibility:hidden;font-size:0;}/* float clearing for everyone else */
+.clearfix() {
+  zoom: 1;
+  &:before { content: ''; display: block; }
+  &:after { content: ''; display: table; clear: both; }
+}
 
-    .clearfix:after{clear:both;content:".";display:block;height:0;visibility:hidden;font-size:0;}/* float clearing for everyone else */
-    .clearfix() {
-      zoom: 1;
-      &:before { content: ''; display: block; }
-      &:after { content: ''; display: table; clear: both; }
-    }
-    
-	.tablet-only { display: none; }
-	.mobile-only { display: none; }
-
-	.desktop-hide { display: none; }
+.tablet-only { display: none; }
+.mobile-only { display: none; }
+.desktop-hide { display: none; }
 
 @media @tabletWidth{
-    .desktop-only { display: none; }
+  .desktop-only { display: none; }
 	.tablet-only { display: block; }
 	.mobile-only { display: none; }
 
@@ -34,7 +31,7 @@
 }
 
 @media @mobileWidth{
-    .desktop-only { display: none; }
+  .desktop-only { display: none; }
 	.tablet-only { display: none; }
 	.mobile-only { display: block; }
 
